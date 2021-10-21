@@ -1,0 +1,40 @@
+    private func setScrollViewForTagview() {
+        
+        var i = 0
+        var lastx1 = 0
+        var lastx0 = 0
+
+        scrollView.subviews.forEach({ $0.removeFromSuperview() })
+        
+        yourArray.forEach({ item in
+            let view = YourCustomView.instanceFromNib()
+            view.prepare(with: item)
+            view.delegate = self
+            let nameStr = "Category Name"
+            view.nameLabel.text = nameStr
+            view.frame.size.height = 30
+            let cellWidth = (nameStr.size(withAttributes:[NSAttributedString.Key.font: FontHelper.regular(14)]).width ?? 0) + 50
+            view.frame.size.width = cellWidth
+            if i == 0 {
+                view.frame.origin.x = 10
+                view.frame.origin.y = 0
+                lastx0 = Int(view.frame.maxX)
+            }else if (CGFloat(lastx0) + cellWidth + 10) < scrollView.frame.width {
+                view.frame.origin.x = CGFloat(lastx0 + 10)
+                view.frame.origin.y = 0
+                lastx0 = Int(view.frame.maxX)
+            }else if lastx0 > lastx1 {
+                view.frame.origin.x = CGFloat(lastx1 + 10)
+                view.frame.origin.y = 50
+                lastx1 = Int(view.frame.maxX)
+            }else {
+                view.frame.origin.x = CGFloat(lastx0 + 10)
+                view.frame.origin.y = 0.0
+                lastx0 = Int(view.frame.maxX)
+            }
+            scrollView.addSubview(view)
+            i += 1
+        })
+        let a = CGFloat(max(lastx1,lastx0))
+        scrollView.contentSize = CGSize(width: a+10,height: scrollView.frame.height)
+    }
